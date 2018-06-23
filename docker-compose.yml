@@ -1,0 +1,59 @@
+version: '3.5'
+services:
+  php7-fpm:
+    build:
+      context: ./php/7.0
+      dockerfile: Dockerfile
+    image: davibusanello/php:7.0-fpm
+    container_name: php7-fpm
+    tty: true
+    restart: always
+    ports:
+      - "9009:9009" # xdebug port
+    links:
+      - mysql
+    depends_on:
+      - mysql
+    environment:
+      APPLICATION_ENV: development
+      XDEBUG_CONFIG: remote_host=172.17.0.1 # default docker host ip
+      PHP_IDE_CONFIG: "serverName=application"
+    volumes:
+      - ./cache/composer:/root/.composer/cache
+      - ./app:/var/www/app
+      - ./services-config/fixed/php.ini:/etc/php/7.0/fpm/php.ini
+      - ./php/7.0/lite_php_browscap.ini:/var/lite_php_browscap.ini
+    working_dir: /var/www/app
+  apache:
+    build:
+      context: ./apache2
+      dockerfile: Dockerfile
+    image: apache2
+    tty: true
+    restart: always
+    ports: # vhost ports (host:container)
+      - "80:80"
+    links:
+      - php7-fpm
+    depends_on:
+      - php7-fpm
+    environment:
+      APPLICATION_ENV: development
+    volumes:
+      - ./app:/var/www/app
+      - ./services-config/apache-vhost:/etc/apache2/sites-enabled
+  mysql:
+      image: mysql:8
+      ports:
+          - 3306:3306
+      volumes:
+          - data-mysql:/var/lib/mysql
+      environment:
+          MYSQL_ROOT_PASSWORD: "${DB_PASSWORD}"
+          MYSQL_DATABASE: "${DB_DATABASE}"
+          MYSQL_USER: "${DB_USERNAME}"
+          MYSQL_PASSWORD: "${DB_PASSWORD}"
+
+volumes:
+    data-mysql:
+
