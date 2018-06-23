@@ -20,7 +20,7 @@ services:
       PHP_IDE_CONFIG: "serverName=application"
     volumes:
       - ./cache/composer:/root/.composer/cache
-      - ./app:/var/www/app
+      - ./review-syncer:/var/www/app
       - ./services-config/fixed/php.ini:/etc/php/7.0/fpm/php.ini
       - ./php/7.0/lite_php_browscap.ini:/var/lite_php_browscap.ini
     working_dir: /var/www/app
@@ -40,7 +40,7 @@ services:
     environment:
       APPLICATION_ENV: development
     volumes:
-      - ./app:/var/www/app
+      - ./review-syncer:/var/www/app
       - ./services-config/apache-vhost:/etc/apache2/sites-enabled
   mysql:
       image: mysql:8
