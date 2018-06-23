@@ -43,7 +43,7 @@ services:
       - ./review-syncer:/var/www/app
       - ./services-config/apache-vhost:/etc/apache2/sites-enabled
   mysql:
-      image: mysql:8
+      image: mysql:5.7
       ports:
           - 3306:3306
       volumes:
