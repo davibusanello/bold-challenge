@@ -38,9 +38,7 @@ COPY --from=composer:1.6 /usr/bin/composer /usr/bin/composer
 
 COPY reload-config /usr/local/bin/
 
-# ENTRYPOINT ["docker-php-entrypoint"]
-ENV PATH=$PATH:/root/.composer/vendor/bin
-
+RUN export PATH="$PATH:/root/.composer/vendor/bin"
 WORKDIR /var/www
 
 CMD ["supervisord", "-c", "/etc/supervisor.conf"]
